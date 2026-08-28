@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor Admin
+    participant Frontend as Admin Dashboard
+    participant API as /api/documents/view
+    participant S3 as Private AWS S3 Bucket
+
+    Admin->>Frontend: Click "Review Identity Documents"
+    Frontend->>API: GET /api/documents/view?id=doc_123
+    API->>API: Check Admin Session Cookie
+    alt Authorized Admin
+        API->>S3: Generate Presigned GetObject Command
+        S3-->>API: Short-lived Signed URL (15m expiry)
+        API-->>Frontend: Redirect to Signed URL / Stream Buffer
+        Frontend-->>Admin: Render NIC Front & Back Preview
+    else Unauthorized User
+        API-->>Frontend: 403 Forbidden
+    end

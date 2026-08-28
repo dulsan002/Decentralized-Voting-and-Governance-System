@@ -1,0 +1,16 @@
+```mermaid
+flowchart TD
+    A[User] -->|Registers via email/password & NIC| B(Application Identity)
+    B -->|Status: PENDING| C{Admin Review}
+    C -->|Rejects| D[Rejected Status]
+    C -->|Approves| E[Status: APPROVED]
+    
+    E -->|Logs in & Connects MetaMask| F(Wallet Linking)
+    F -->|Signs Cryptographic Nonce| G{Signature Verify}
+    G -->|Fails| H[Linking Rejected]
+    G -->|Passes| I[Wallet Verified & Associated]
+    
+    I -->|Admin Authorizes| J[Eligible Voter on Smart Contract]
+    J -->|Submits Transaction| K(Smart Contract)
+    K -->|Records Immutable Vote| L[(Blockchain)]
+```

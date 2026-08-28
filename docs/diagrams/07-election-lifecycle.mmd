@@ -1,0 +1,40 @@
+stateDiagram-v2
+    [*] --> Pending: createElection()
+
+    Pending --> Active: startElection()
+    note right of Pending
+        Allowed actions:
+        - Add candidates
+        - Authorize voters
+        - Revoke voters
+        - Configure election
+    end note
+
+    Active --> Ended: endElection()
+    note right of Active
+        Allowed actions:
+        - Cast ballot
+        - Modify ballot
+        - Authorize voters
+        Blocked:
+        - Add candidates
+        - Revoke voters
+    end note
+
+    Ended --> Finalized: finalizeElection()
+    note right of Ended
+        Allowed actions:
+        - View results (preliminary)
+        Blocked:
+        - All voting
+        - All modification
+        - Candidate changes
+    end note
+
+    Finalized --> [*]
+    note right of Finalized
+        Terminal state:
+        - Results locked
+        - Winner determined
+        - No further changes
+    end note

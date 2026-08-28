@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DEFAULT LIGHT THEME (INSTITUTIONAL & PROFESSIONAL) */
+:root {
+  --color-bg: #f8fafc;
+  --color-fg: #0f172a;
+  
+  --color-card: #ffffff;
+  --color-card-fg: #0f172a;
+  --color-border: #e2e8f0;
+  
+  --color-muted: #f1f5f9;
+  --color-muted-fg: #64748b;
+  
+  --color-primary: #1e3a8a;
+  --color-primary-hover: #1e40af;
+  --color-primary-fg: #ffffff;
+  
+  --color-secondary: #475569;
+  --color-secondary-hover: #334155;
+  --color-secondary-fg: #ffffff;
+}
+
+/* DARK MODE OVERRIDES */
+.dark {
+  --color-bg: #0f172a;
+  --color-fg: #f8fafc;
+  
+  --color-card: #1e293b;
+  --color-card-fg: #f8fafc;
+  --color-border: #334155;
+  
+  --color-muted: #1e293b;
+  --color-muted-fg: #94a3b8;
+  
+  --color-primary: #2563eb;
+  --color-primary-hover: #3b82f6;
+  --color-primary-fg: #ffffff;
+  
+  --color-secondary: #64748b;
+  --color-secondary-hover: #94a3b8;
+  --color-secondary-fg: #ffffff;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem; /* Bumping base font size from default */
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.015em;
+}
+
+/* Institutional Card */
+.institutional-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.institutional-card-hover:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px 0 rgba(30, 58, 138, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-fg);
+}

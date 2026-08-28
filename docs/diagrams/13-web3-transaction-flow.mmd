@@ -1,0 +1,50 @@
+sequenceDiagram
+    participant UI as Frontend
+    participant EJS as ethers.js
+    participant MM as MetaMask
+    participant RPC as JSON-RPC Node
+    participant SC as Smart Contract
+    participant BC as Blockchain
+
+    Note over UI,BC: READ OPERATION (No Gas)
+    
+    UI->>EJS: contract.getElection(id)
+    EJS->>RPC: eth_call
+    RPC->>SC: Execute view function
+    SC-->>RPC: Return data
+    RPC-->>EJS: Encoded response
+    EJS-->>UI: Decoded Election data
+
+    Note over UI,BC: WRITE OPERATION (Requires Gas)
+
+    UI->>EJS: contract.castBallot(id, p1, p2)
+    EJS->>MM: eth_sendTransaction
+    
+    MM->>MM: Show confirmation popup
+    
+    alt User Rejects
+        MM-->>EJS: Error: User rejected (4001)
+        EJS-->>UI: Show rejection message
+    else User Approves
+        MM->>RPC: Signed transaction
+        RPC->>BC: Include in block
+        BC->>SC: Execute function
+        
+        alt Contract Reverts
+            SC-->>RPC: Revert with custom error
+            RPC-->>EJS: Transaction failed
+            EJS-->>UI: Parse & show revert reason
+        else Success
+            SC->>BC: State updated + Event emitted
+            BC-->>RPC: Transaction receipt
+            RPC-->>EJS: Receipt (status=1)
+            EJS-->>UI: Confirmation + tx hash
+        end
+    end
+
+    Note over UI,BC: EVENT QUERY
+
+    UI->>EJS: contract.queryFilter("BallotCast", fromBlock)
+    EJS->>RPC: eth_getLogs
+    RPC-->>EJS: Log entries
+    EJS-->>UI: Parsed events array

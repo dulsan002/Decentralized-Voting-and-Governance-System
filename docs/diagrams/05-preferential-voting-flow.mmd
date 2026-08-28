@@ -1,0 +1,40 @@
+flowchart TB
+    Start["Election Finalization Triggered"]
+    
+    Start --> Count["Count Primary Preferences<br/>(1st preference from each ballot)"]
+    
+    Count --> Primary["PRIMARY COUNT COMPLETE"]
+    
+    Primary --> CheckVotes{"Any votes<br/>cast?"}
+    
+    CheckVotes -->|No| NoVotes["Result: NO_VOTES<br/>No winner declared"]
+    
+    CheckVotes -->|Yes| FindMax["Find maximum<br/>primary vote count"]
+    
+    FindMax --> CheckTie{"How many candidates<br/>have max votes?"}
+    
+    CheckTie -->|"Exactly 1"| Winner1["Result: PRIMARY_RESULT<br/>Winner = candidate with most votes"]
+    
+    CheckTie -->|"2 or more"| TieDetected["TIE DETECTED<br/>Emit TieDetected event"]
+    
+    TieDetected --> CheckMode{"Tie-break<br/>mode?"}
+    
+    CheckMode -->|NoTieBreak| Unresolved["Result: TIE_UNRESOLVED<br/>No winner declared"]
+    
+    CheckMode -->|SecondPreference| CountSecondary["Count 2nd preferences<br/>for TIED candidates only<br/>(from ALL ballots)"]
+    
+    CountSecondary --> CheckSecTie{"How many tied candidates<br/>have max 2nd preferences?"}
+    
+    CheckSecTie -->|"Exactly 1"| Winner2["Result: TIE_BREAK_RESOLVED<br/>Winner = most 2nd preferences"]
+    
+    CheckSecTie -->|"2 or more"| Fallback["FALLBACK RULE<br/>Winner = earliest registered<br/>(lowest candidate ID)"]
+    
+    Fallback --> Winner3["Result: RESOLVED_BY_FALLBACK"]
+
+    style Start fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style NoVotes fill:#64748B,stroke:#475569,color:#fff
+    style Winner1 fill:#10B981,stroke:#059669,color:#fff
+    style TieDetected fill:#F59E0B,stroke:#D97706,color:#fff
+    style Unresolved fill:#F43F5E,stroke:#E11D48,color:#fff
+    style Winner2 fill:#10B981,stroke:#059669,color:#fff
+    style Winner3 fill:#06B6D4,stroke:#0891B2,color:#fff

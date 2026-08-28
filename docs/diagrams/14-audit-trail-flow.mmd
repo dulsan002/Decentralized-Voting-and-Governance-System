@@ -1,0 +1,50 @@
+flowchart TB
+    subgraph "State-Changing Actions"
+        A1["Admin: createElection()"]
+        A2["Admin: addCandidate()"]
+        A3["Admin: authorizeVoter()"]
+        A4["Admin: startElection()"]
+        A5["Voter: castBallot()"]
+        A6["Voter: modifyBallot()"]
+        A7["Admin: endElection()"]
+        A8["Admin: finalizeElection()"]
+    end
+
+    subgraph "Blockchain Events (Immutable)"
+        E1["ElectionCreated<br/>(electionId, title, creator, start, end)"]
+        E2["CandidateAdded<br/>(electionId, candidateId, name)"]
+        E3["VoterAuthorized<br/>(electionId, voter)"]
+        E4["ElectionStarted<br/>(electionId, timestamp)"]
+        E5["BallotCast<br/>(electionId, voter, pref1, pref2, time)"]
+        E6["BallotModified<br/>(electionId, voter, oldP1, oldP2, newP1, newP2, time)"]
+        E7["ElectionEnded<br/>(electionId, timestamp)"]
+        E8["ElectionFinalized<br/>(electionId, winnerId, resultStatus, time)"]
+    end
+
+    subgraph "Audit Dashboard"
+        AD["Frontend queries events<br/>via contract.queryFilter()"]
+        AT["Audit Table:<br/>Type | Election | Address | Time | Tx Hash | Block"]
+    end
+
+    A1 --> E1
+    A2 --> E2
+    A3 --> E3
+    A4 --> E4
+    A5 --> E5
+    A6 --> E6
+    A7 --> E7
+    A8 --> E8
+
+    E1 --> AD
+    E2 --> AD
+    E3 --> AD
+    E4 --> AD
+    E5 --> AD
+    E6 --> AD
+    E7 --> AD
+    E8 --> AD
+
+    AD --> AT
+
+    style AD fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style AT fill:#06B6D4,stroke:#0891B2,color:#fff

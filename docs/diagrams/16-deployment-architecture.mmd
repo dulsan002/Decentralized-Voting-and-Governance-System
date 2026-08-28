@@ -1,0 +1,46 @@
+graph TB
+    subgraph "Development Environment"
+        DEV["Developer Machine"]
+        HH["Hardhat<br/>(Compile + Test)"]
+        HN["Hardhat Network<br/>(Local Blockchain)"]
+        NJS["Next.js Dev Server<br/>(localhost:3000)"]
+    end
+
+    subgraph "Build Pipeline"
+        COMP["Solidity Compilation"]
+        TEST["Contract Tests<br/>(Chai + Mocha)"]
+        ABI["ABI Generation"]
+        FE["Frontend Build"]
+    end
+
+    subgraph "Sepolia Testnet"
+        SRPC["Sepolia RPC<br/>(Infura / Alchemy)"]
+        SEP["Sepolia Blockchain"]
+        SCAN["Etherscan Sepolia<br/>(Contract Verification)"]
+    end
+
+    subgraph "End User"
+        BR["Browser"]
+        MMU["MetaMask"]
+    end
+
+    DEV --> HH
+    HH --> COMP
+    COMP --> TEST
+    COMP --> ABI
+    ABI --> FE
+    TEST -->|"All pass"| HN
+    HN --> NJS
+
+    HH -->|"Deploy to testnet"| SRPC
+    SRPC --> SEP
+    SEP --> SCAN
+
+    FE -->|"Deploy frontend"| BR
+    BR --> MMU
+    MMU --> SRPC
+
+    style DEV fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style SEP fill:#10B981,stroke:#059669,color:#fff
+    style HN fill:#06B6D4,stroke:#0891B2,color:#fff
+    style BR fill:#F59E0B,stroke:#D97706,color:#fff

@@ -1,0 +1,43 @@
+sequenceDiagram
+    actor V as Voter
+    participant UI as Next.js Frontend
+    participant W as MetaMask
+    participant E as ethers.js
+    participant SC as DecentraVote Contract
+    participant BC as Blockchain
+
+    V->>UI: Open Election Ballot Page
+    UI->>E: getElection(electionId)
+    E->>SC: getElection(electionId)
+    SC-->>E: Election data
+    E-->>UI: Display election + candidates
+    
+    UI->>E: getIsEligible(electionId, voterAddress)
+    E->>SC: isEligibleVoter[electionId][voter]
+    SC-->>E: true/false
+    E-->>UI: Show eligibility status
+
+    V->>UI: Select 1st Preference
+    V->>UI: Select 2nd Preference (optional)
+    V->>UI: Click "Review Ballot"
+    UI->>UI: Display ballot summary
+
+    V->>UI: Click "Submit Ballot"
+    UI->>E: castBallot(electionId, pref1, pref2)
+    E->>W: Request transaction signature
+    W->>V: Show MetaMask popup
+    V->>W: Approve & Sign
+
+    W->>BC: Submit transaction
+    BC->>SC: Execute castBallot()
+    
+    Note over SC: Validate:<br/>1. Election active<br/>2. Voter eligible<br/>3. Not already voted<br/>4. Valid candidates<br/>5. No duplicate prefs
+
+    SC->>SC: Store ballot
+    SC->>SC: Update primary tally
+    SC->>SC: Update secondary tally (if pref2)
+    SC->>BC: Emit BallotCast event
+
+    BC-->>E: Transaction receipt
+    E-->>UI: Confirmation + tx hash
+    UI-->>V: "Ballot Submitted Successfully"

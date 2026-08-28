@@ -1,0 +1,42 @@
+graph TB
+    subgraph "Contract State Variables"
+        EC["electionCount<br/>uint256"]
+        
+        subgraph "Elections Mapping"
+            EM["elections<br/>mapping(uint256 => Election)"]
+            E1["Election {<br/>id, title, description,<br/>startTime, endTime,<br/>status, maxPreferences,<br/>secondPreferenceEnabled,<br/>tieBreakMode, candidateCount,<br/>totalVotes, creator,<br/>resultStatus, winnerId<br/>}"]
+        end
+
+        subgraph "Candidates Mapping"
+            CM["candidates<br/>mapping(uint256 => mapping(uint256 => Candidate))"]
+            C1["Candidate {<br/>id, name, description,<br/>primaryVotes,<br/>secondaryVotes<br/>}"]
+        end
+
+        subgraph "Ballots Mapping"
+            BM["ballots<br/>mapping(uint256 => mapping(address => Ballot))"]
+            B1["Ballot {<br/>firstPreference,<br/>secondPreference,<br/>exists, timestamp<br/>}"]
+        end
+
+        subgraph "Eligibility Mapping"
+            VM["isEligibleVoter<br/>mapping(uint256 => mapping(address => bool))"]
+            VC["eligibleVoterCount<br/>mapping(uint256 => uint256)"]
+        end
+    end
+
+    EC --> EM
+    EM --> E1
+    E1 -->|"electionId"| CM
+    CM --> C1
+    E1 -->|"electionId"| BM
+    BM --> B1
+    E1 -->|"electionId"| VM
+    E1 -->|"electionId"| VC
+
+    B1 -->|"firstPreference points to"| C1
+    B1 -->|"secondPreference points to"| C1
+
+    style EC fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style E1 fill:#06B6D4,stroke:#0891B2,color:#fff
+    style C1 fill:#10B981,stroke:#059669,color:#fff
+    style B1 fill:#F59E0B,stroke:#D97706,color:#fff
+    style VM fill:#8B5CF6,stroke:#7C3AED,color:#fff

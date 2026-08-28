@@ -1,0 +1,72 @@
+graph LR
+    subgraph Actors
+        PU["Public User"]
+        VT["Verified Voter"]
+        AD["Admin / Organizer"]
+        CO["Contract Owner"]
+    end
+
+    subgraph "Public Use Cases"
+        UC_LP["View Landing Page"]
+        UC_ED["Browse Elections"]
+        UC_EI["View Election Details"]
+        UC_HW["View How It Works"]
+    end
+
+    subgraph "Wallet Use Cases"
+        UC_CW["Connect Wallet"]
+        UC_NS["View Network Status"]
+    end
+
+    subgraph "Voter Use Cases"
+        UC_VD["View Voter Dashboard"]
+        UC_CE["Check Eligibility"]
+        UC_CB["Cast Ballot"]
+        UC_MB["Modify Ballot"]
+        UC_VH["View Voting History"]
+        UC_VR["View Results"]
+    end
+
+    subgraph "Admin Use Cases"
+        UC_AD["View Admin Dashboard"]
+        UC_CR["Create Election"]
+        UC_AC["Add Candidates"]
+        UC_AV["Authorize Voters"]
+        UC_SE["Start Election"]
+        UC_EE["End Election"]
+        UC_FE["Finalize Election"]
+        UC_MA["Monitor Audit"]
+    end
+
+    subgraph "Owner Use Cases"
+        UC_GR["Grant Organizer Role"]
+        UC_RR["Revoke Organizer Role"]
+    end
+
+    PU --- UC_LP
+    PU --- UC_ED
+    PU --- UC_EI
+    PU --- UC_HW
+    PU --- UC_CW
+
+    VT --- UC_CW
+    VT --- UC_VD
+    VT --- UC_CE
+    VT --- UC_CB
+    VT --- UC_MB
+    VT --- UC_VH
+    VT --- UC_VR
+    VT --- UC_NS
+
+    AD --- UC_AD
+    AD --- UC_CR
+    AD --- UC_AC
+    AD --- UC_AV
+    AD --- UC_SE
+    AD --- UC_EE
+    AD --- UC_FE
+    AD --- UC_MA
+    AD --- UC_CW
+
+    CO --- UC_GR
+    CO --- UC_RR

@@ -1,0 +1,28 @@
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant Backend
+    participant MetaMask
+    participant Blockchain
+
+    User->>Frontend: Login via Email/Password
+    Frontend->>Backend: Authenticate (JWT)
+    Backend-->>Frontend: Session Created
+    
+    User->>Frontend: Click "Verify & Link Wallet"
+    Frontend->>Backend: GET /api/wallet/link
+    Backend-->>Frontend: Return Challenge Nonce
+    
+    Frontend->>MetaMask: Prompt Signature for Nonce
+    User->>MetaMask: Approve Signature
+    MetaMask-->>Frontend: Return Signed Message Hash
+    
+    Frontend->>Backend: POST /api/wallet/link (Address, Signature, Nonce)
+    Backend->>Backend: Verify Signature (ecrecover)
+    Backend->>Backend: Check Duplicate Addresses
+    Backend->>Backend: Update User DB (linkedWalletAddress)
+    Backend-->>Frontend: Success Response
+    
+    Frontend-->>User: Wallet Successfully Verified & Linked
+```

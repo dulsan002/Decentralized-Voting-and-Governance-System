@@ -1,0 +1,47 @@
+erDiagram
+    ELECTION {
+        uint256 id PK
+        string title
+        string description
+        uint256 startTime
+        uint256 endTime
+        ElectionStatus status
+        uint8 maxPreferences
+        bool secondPreferenceEnabled
+        TieBreakMode tieBreakMode
+        uint256 candidateCount
+        uint256 totalVotes
+        address creator
+        ResultStatus resultStatus
+        uint256 winnerId
+    }
+
+    CANDIDATE {
+        uint256 id PK
+        uint256 electionId FK
+        string name
+        string description
+        uint256 primaryVotes
+        uint256 secondaryVotes
+    }
+
+    BALLOT {
+        uint256 electionId FK
+        address voter PK
+        uint256 firstPreference FK
+        uint256 secondPreference FK
+        bool exists
+        uint256 timestamp
+    }
+
+    VOTER_ELIGIBILITY {
+        uint256 electionId FK
+        address voter PK
+        bool isEligible
+    }
+
+    ELECTION ||--o{ CANDIDATE : "has many"
+    ELECTION ||--o{ BALLOT : "receives"
+    ELECTION ||--o{ VOTER_ELIGIBILITY : "authorizes"
+    CANDIDATE ||--o{ BALLOT : "referenced as 1st pref"
+    CANDIDATE ||--o{ BALLOT : "referenced as 2nd pref"

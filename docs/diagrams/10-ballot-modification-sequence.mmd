@@ -1,0 +1,40 @@
+sequenceDiagram
+    actor V as Voter
+    participant UI as Frontend
+    participant W as MetaMask
+    participant SC as Smart Contract
+    participant BC as Blockchain
+
+    V->>UI: Open election (has existing ballot)
+    UI->>SC: getBallot(electionId, voterAddress)
+    SC-->>UI: Current ballot (pref1=A, pref2=C)
+    UI->>UI: Display current preferences
+
+    V->>UI: Select new 1st Preference (B)
+    V->>UI: Keep 2nd Preference (C)
+    V->>UI: Click "Review Changes"
+    
+    UI->>UI: Show comparison:<br/>Old: A, C → New: B, C
+
+    V->>UI: Click "Confirm Modification"
+    UI->>SC: modifyBallot(electionId, B, C)
+    SC->>W: Request signature
+    W->>V: MetaMask popup
+    V->>W: Approve
+
+    W->>BC: Submit transaction
+
+    Note over SC: Validation:<br/>1. Election active ✓<br/>2. Voter eligible ✓<br/>3. Has existing ballot ✓<br/>4. Valid candidates ✓<br/>5. No duplicate prefs ✓
+
+    SC->>SC: Decrement old tallies:<br/>Candidate A primaryVotes--<br/>Candidate C secondaryVotes--
+    
+    SC->>SC: Update ballot:<br/>firstPref = B<br/>secondPref = C
+    
+    SC->>SC: Increment new tallies:<br/>Candidate B primaryVotes++<br/>Candidate C secondaryVotes++
+    
+    SC->>BC: Emit BallotModified event:<br/>(electionId, voter, oldPref1=A,<br/>oldPref2=C, newPref1=B, newPref2=C)
+
+    BC-->>UI: Transaction confirmed
+    UI-->>V: "Ballot Modified Successfully"
+
+    Note over BC: Blockchain preserves both:<br/>Block 100: BallotCast(A, C)<br/>Block 105: BallotModified(A,C → B,C)<br/>Nothing is erased.

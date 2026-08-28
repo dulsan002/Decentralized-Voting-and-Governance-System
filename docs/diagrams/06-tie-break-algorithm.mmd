@@ -1,0 +1,36 @@
+flowchart TB
+    Input["Tie Detected:<br/>2+ candidates with equal primary votes"]
+
+    Input --> Identify["Identify tied candidates"]
+    
+    Identify --> Collect["Collect 2nd preferences<br/>from ALL ballots"]
+    
+    Collect --> Filter["Filter: only count 2nd preferences<br/>that point to a TIED candidate"]
+    
+    Filter --> Q1{"Does voter's 2nd pref<br/>= a tied candidate?"}
+    
+    Q1 -->|Yes| CountIt["Count as +1 for that<br/>tied candidate"]
+    Q1 -->|No| Skip["Skip this ballot's<br/>2nd preference"]
+    
+    Q1 -->|"2nd pref = 0<br/>(blank)"| SkipBlank["Skip: no 2nd preference"]
+    
+    CountIt --> Tally["Tally 2nd preferences<br/>for all tied candidates"]
+    Skip --> Tally
+    SkipBlank --> Tally
+    
+    Tally --> FindMax["Find max 2nd preference<br/>count among tied candidates"]
+    
+    FindMax --> Q2{"Unique maximum?"}
+    
+    Q2 -->|"Yes (1 candidate)"| Resolved["TIE_BREAK_RESOLVED<br/>Winner = highest 2nd pref"]
+    
+    Q2 -->|"No (still tied)"| Q3{"Any 2nd preferences<br/>were counted?"}
+    
+    Q3 -->|"Yes but tied"| FallbackTied["FALLBACK<br/>Winner = lowest candidate ID<br/>among still-tied"]
+    
+    Q3 -->|"No (all zero)"| FallbackZero["FALLBACK<br/>Winner = lowest candidate ID<br/>among original tied"]
+
+    style Input fill:#F59E0B,stroke:#D97706,color:#fff
+    style Resolved fill:#10B981,stroke:#059669,color:#fff
+    style FallbackTied fill:#06B6D4,stroke:#0891B2,color:#fff
+    style FallbackZero fill:#06B6D4,stroke:#0891B2,color:#fff

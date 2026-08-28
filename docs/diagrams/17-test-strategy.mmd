@@ -1,0 +1,60 @@
+graph TB
+    subgraph "Phase 3: Contract Tests"
+        CT["Smart Contract<br/>Unit Tests"]
+        
+        subgraph "Test Categories"
+            C1["Election Management<br/>(EM-01 to EM-11)"]
+            C2["Voter Authorization<br/>(VA-01 to VA-07)"]
+            C3["Ballot Submission<br/>(BS-01 to BS-10)"]
+            C4["Ballot Modification<br/>(BM-01 to BM-08)"]
+            C5["Result Calculation<br/>(RC-01 to RC-10)"]
+            C6["Access Control<br/>(AC-01 to AC-05)"]
+            C7["Edge Cases<br/>(EC-01 to EC-06)"]
+        end
+    end
+
+    subgraph "Phase 4: Security Tests"
+        ST["Security Review"]
+        GAS["Gas Analysis"]
+    end
+
+    subgraph "Phase 6-10: Integration Tests"
+        W3T["Web3 Integration"]
+        UIT["UI Smoke Tests"]
+    end
+
+    subgraph "Phase 11: E2E Tests"
+        E2E["End-to-End on Sepolia"]
+        MAN["Manual Verification"]
+    end
+
+    subgraph "Test Tools"
+        HH["Hardhat Test Runner"]
+        CH["Chai Assertions"]
+        MO["Mocha Framework"]
+        TH["Hardhat Time Helpers"]
+    end
+
+    CT --> C1
+    CT --> C2
+    CT --> C3
+    CT --> C4
+    CT --> C5
+    CT --> C6
+    CT --> C7
+
+    CT --> ST
+    ST --> GAS
+    GAS --> W3T
+    W3T --> UIT
+    UIT --> E2E
+    E2E --> MAN
+
+    HH --> CT
+    CH --> CT
+    MO --> CT
+    TH --> CT
+
+    style CT fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style ST fill:#F43F5E,stroke:#E11D48,color:#fff
+    style E2E fill:#10B981,stroke:#059669,color:#fff

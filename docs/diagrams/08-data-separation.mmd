@@ -1,0 +1,22 @@
+graph LR
+    subgraph OffChain["OFF-CHAIN DATABASE & PRIVATE S3 (Off-Chain PII)"]
+        UserAcc["User Credentials (Email/PBKDF2)"]
+        PersonalDetails["Full Name, DOB, Phone, District"]
+        NICDoc["Sri Lankan NIC No & Images"]
+        VerifStatus["Verification Status (APPROVED)"]
+        WalletLink["Linked Wallet Address Reference"]
+    end
+
+    subgraph OnChain["ETHEREUM BLOCKCHAIN (Immutable Governance)"]
+        SmartContract["DecentraVote.sol"]
+        Whitelist["isEligibleVoter Mapping"]
+        BallotState["getBallot (1st & 2nd Prefs)"]
+        Tallies["primaryVotes & secondaryVotes"]
+        Events["Audit Log Events"]
+    end
+
+    WalletLink -. Cryptographic Link .-> Whitelist
+    SmartContract --- Whitelist
+    SmartContract --- BallotState
+    SmartContract --- Tallies
+    SmartContract --- Events

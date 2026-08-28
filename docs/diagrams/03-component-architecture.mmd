@@ -1,0 +1,81 @@
+graph TB
+    subgraph "Next.js App"
+        subgraph "Pages (App Router)"
+            LP["Landing Page<br/>/"]
+            ELP["Election List<br/>/elections"]
+            EDP["Election Detail<br/>/elections/[id]"]
+            VP["Voting Page<br/>/elections/[id]/vote"]
+            RP["Results Page<br/>/elections/[id]/results"]
+            ADP["Admin Dashboard<br/>/admin"]
+            ACP["Create Election<br/>/admin/create"]
+            AMP["Manage Election<br/>/admin/[id]"]
+            AUP["Audit Page<br/>/audit"]
+            VDP["Voter Dashboard<br/>/dashboard"]
+        end
+
+        subgraph "Components"
+            LC["Layout Components<br/>(Nav, Footer, Sidebar)"]
+            UC["UI Components<br/>(Button, Card, Badge, Modal)"]
+            WC["Wallet Components<br/>(Connect, Status, Network)"]
+            EC["Election Components<br/>(Card, Lifecycle, Config)"]
+            VC["Voting Components<br/>(Ballot, Selector, Review)"]
+            RC["Results Components<br/>(Chart, TieBreak, Winner)"]
+            AC["Admin Components<br/>(Forms, Tables, Controls)"]
+        end
+
+        subgraph "Hooks"
+            HW["useWallet()"]
+            HC["useContract()"]
+            HE["useElection()"]
+            HV["useVoting()"]
+            HR["useResults()"]
+            HA["useAudit()"]
+        end
+
+        subgraph "Context Providers"
+            WP["WalletProvider"]
+            CP["ContractProvider"]
+        end
+
+        subgraph "Lib"
+            ABI["Contract ABI"]
+            W3["Web3 Utils"]
+            UT["Utilities"]
+        end
+    end
+
+    subgraph "External"
+        MM["MetaMask"]
+        ETH["ethers.js"]
+        BL["Blockchain"]
+    end
+
+    LP --> LC
+    LP --> UC
+    ELP --> EC
+    VP --> VC
+    VP --> WC
+    RP --> RC
+    ADP --> AC
+    AUP --> UC
+
+    WC --> HW
+    EC --> HE
+    VC --> HV
+    RC --> HR
+
+    HW --> WP
+    HC --> CP
+    HE --> HC
+    HV --> HC
+    HR --> HC
+    HA --> HC
+
+    WP --> ETH
+    CP --> ABI
+    ETH --> MM
+    MM --> BL
+
+    style LP fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style BL fill:#0F172A,stroke:#334155,color:#CBD5E1
+    style MM fill:#F59E0B,stroke:#D97706,color:#fff

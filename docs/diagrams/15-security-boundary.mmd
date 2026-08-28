@@ -1,0 +1,64 @@
+graph TB
+    subgraph "Security Boundary: Blockchain (Trusted)"
+        SC["DecentraVote Smart Contract"]
+        
+        subgraph "Contract Enforcement"
+            AC["Access Control<br/>(RBAC via AccessControl)"]
+            EV["Eligibility Verification<br/>(isEligibleVoter mapping)"]
+            DV["Duplicate Prevention<br/>(ballot exists check)"]
+            DE["Deadline Enforcement<br/>(election status check)"]
+            PV["Preference Validation<br/>(candidate + uniqueness)"]
+            LC["Lifecycle Control<br/>(state transitions)"]
+        end
+        
+        BC["Blockchain State<br/>(Immutable)"]
+        EL["Event Logs<br/>(Permanent Audit Trail)"]
+    end
+
+    subgraph "Untrusted: Frontend"
+        UI["Next.js Application"]
+        UX["UX Validation<br/>(convenience only)"]
+    end
+
+    subgraph "Untrusted: Network"
+        MM["MetaMask<br/>(User controls signing)"]
+        RPC["RPC Node<br/>(Read/write gateway)"]
+    end
+
+    subgraph "Threat Vectors"
+        T1["Direct contract call<br/>(bypass frontend)"]
+        T2["Unauthorized wallet"]
+        T3["Duplicate submission"]
+        T4["Late voting"]
+        T5["Invalid preferences"]
+        T6["State manipulation"]
+    end
+
+    UI -->|"User actions"| MM
+    MM -->|"Signed tx"| RPC
+    RPC -->|"Execute"| SC
+    SC --> AC
+    SC --> EV
+    SC --> DV
+    SC --> DE
+    SC --> PV
+    SC --> LC
+    SC --> BC
+    SC --> EL
+
+    T1 -.->|"Blocked by"| AC
+    T2 -.->|"Blocked by"| EV
+    T3 -.->|"Blocked by"| DV
+    T4 -.->|"Blocked by"| DE
+    T5 -.->|"Blocked by"| PV
+    T6 -.->|"Blocked by"| LC
+
+    style SC fill:#10B981,stroke:#059669,color:#fff
+    style BC fill:#0F172A,stroke:#334155,color:#CBD5E1
+    style UI fill:#F59E0B,stroke:#D97706,color:#fff
+    style T1 fill:#F43F5E,stroke:#E11D48,color:#fff
+    style T2 fill:#F43F5E,stroke:#E11D48,color:#fff
+    style T3 fill:#F43F5E,stroke:#E11D48,color:#fff
+    style T4 fill:#F43F5E,stroke:#E11D48,color:#fff
+    style T5 fill:#F43F5E,stroke:#E11D48,color:#fff
+    style T6 fill:#F43F5E,stroke:#E11D48,color:#fff

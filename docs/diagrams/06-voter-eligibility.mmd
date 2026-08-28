@@ -1,0 +1,14 @@
+graph TD
+    A[Voter Accesses Ballot Page] --> B{1. Authenticated Account?}
+    B -- No --> X[Block Voting]
+    B -- Yes --> C{2. Identity Approved by Admin?}
+    C -- No --> X
+    C -- Yes --> D{3. Wallet Connected in Browser?}
+    D -- No --> X
+    D -- Yes --> E{4. Cryptographically Linked?}
+    E -- No --> X
+    E -- Yes --> F{5. Address Whitelisted On-Chain?}
+    F -- No --> X
+    F -- Yes --> G{6. Election Active?}
+    G -- No --> X
+    G -- Yes --> H[ALLOW VOTING: Unlock Ballot Form]

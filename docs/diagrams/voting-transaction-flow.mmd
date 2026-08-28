@@ -1,0 +1,33 @@
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant MetaMask
+    participant Smart Contract
+    participant Blockchain
+
+    User->>Frontend: Select Election & Ballot Preferences
+    User->>Frontend: Click "Submit Ballot"
+    
+    Frontend->>Frontend: Construct Transaction (castBallot)
+    Frontend->>MetaMask: Send Transaction Request
+    
+    MetaMask->>User: Display Transaction & Gas Estimation
+    User->>MetaMask: Confirm Transaction
+    
+    MetaMask->>Blockchain: Broadcast Signed Transaction
+    Blockchain->>Smart Contract: Execute castBallot(electionId, prefs)
+    
+    Smart Contract->>Smart Contract: Require: electionExists
+    Smart Contract->>Smart Contract: Require: electionActive
+    Smart Contract->>Smart Contract: Require: isEligibleVoter[msg.sender]
+    Smart Contract->>Smart Contract: Require: !hasVoted[msg.sender]
+    
+    Smart Contract->>Smart Contract: Record Vote
+    Smart Contract->>Blockchain: Emit VoteCast Event
+    
+    Blockchain-->>MetaMask: Transaction Confirmed
+    MetaMask-->>Frontend: Transaction Hash Receipt
+    
+    Frontend-->>User: Display Success Confirmation & TX Hash
+```

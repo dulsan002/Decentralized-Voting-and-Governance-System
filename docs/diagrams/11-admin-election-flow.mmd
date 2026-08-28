@@ -1,0 +1,58 @@
+sequenceDiagram
+    actor A as Admin / Organizer
+    participant UI as Admin Dashboard
+    participant W as MetaMask
+    participant SC as Smart Contract
+    participant BC as Blockchain
+
+    Note over A,BC: STEP 1: Create Election
+
+    A->>UI: Fill election form<br/>(title, desc, times, config)
+    A->>UI: Click "Create Election"
+    UI->>SC: createElection(title, desc, start, end, config)
+    SC->>W: Request signature
+    W->>A: Approve
+    W->>BC: Submit tx
+    SC->>BC: Emit ElectionCreated
+    BC-->>UI: Confirmed (electionId)
+
+    Note over A,BC: STEP 2: Add Candidates
+
+    A->>UI: Enter candidate name + description
+    A->>UI: Click "Add Candidate"
+    UI->>SC: addCandidate(electionId, name, desc)
+    SC->>BC: Emit CandidateAdded
+    BC-->>UI: Confirmed
+
+    A->>UI: Repeat for all candidates
+
+    Note over A,BC: STEP 3: Authorize Voters
+
+    A->>UI: Enter voter address(es)
+    A->>UI: Click "Authorize"
+    UI->>SC: authorizeVotersBatch(electionId, addresses[])
+    SC->>BC: Emit VoterAuthorized (per voter)
+    BC-->>UI: Confirmed
+
+    Note over A,BC: STEP 4: Start Election
+
+    A->>UI: Click "Start Election"
+    UI->>SC: startElection(electionId)
+    SC->>SC: Verify: status=Pending, candidates>=2
+    SC->>BC: Emit ElectionStarted
+    BC-->>UI: Confirmed (status=Active)
+
+    Note over A,BC: STEP 5: End Election
+
+    A->>UI: Click "End Election"
+    UI->>SC: endElection(electionId)
+    SC->>BC: Emit ElectionEnded
+    BC-->>UI: Confirmed (status=Ended)
+
+    Note over A,BC: STEP 6: Finalize
+
+    A->>UI: Click "Finalize Election"
+    UI->>SC: finalizeElection(electionId)
+    SC->>SC: Calculate results + tie-break
+    SC->>BC: Emit ElectionFinalized
+    BC-->>UI: Confirmed (winner + status)

@@ -1,0 +1,33 @@
+graph TB
+    subgraph "User Layer"
+        U[User / Browser]
+        MW[MetaMask Wallet]
+    end
+
+    subgraph "Frontend Layer"
+        NJ["Next.js App<br/>(TypeScript + Tailwind)"]
+        EJ["ethers.js<br/>(Web3 Library)"]
+    end
+
+    subgraph "Blockchain Layer"
+        RPC["Ethereum JSON-RPC<br/>(Hardhat / Sepolia)"]
+        SC["DecentraVote.sol<br/>(Smart Contract)"]
+        BC["Blockchain State<br/>+ Events"]
+    end
+
+    U -->|Interacts| NJ
+    NJ -->|Web3 calls| EJ
+    EJ -->|Signs transactions| MW
+    MW -->|Submits tx| RPC
+    RPC -->|Executes| SC
+    SC -->|Stores| BC
+    BC -->|Reads| EJ
+    EJ -->|Displays| NJ
+
+    style U fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style MW fill:#F59E0B,stroke:#D97706,color:#fff
+    style NJ fill:#06B6D4,stroke:#0891B2,color:#fff
+    style EJ fill:#8B5CF6,stroke:#7C3AED,color:#fff
+    style RPC fill:#10B981,stroke:#059669,color:#fff
+    style SC fill:#F43F5E,stroke:#E11D48,color:#fff
+    style BC fill:#0F172A,stroke:#334155,color:#CBD5E1

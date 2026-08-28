@@ -1,0 +1,46 @@
+flowchart TB
+    Start["User Connects Wallet"]
+    
+    Start --> CheckMM{"MetaMask<br/>installed?"}
+    
+    CheckMM -->|No| InstallMM["Show: Please install MetaMask"]
+    CheckMM -->|Yes| Connect["Request eth_requestAccounts"]
+    
+    Connect --> Approved{"User<br/>approved?"}
+    
+    Approved -->|No| Rejected["Show: Connection rejected"]
+    Approved -->|Yes| GetAddress["Get wallet address"]
+    
+    GetAddress --> CheckNetwork{"Correct<br/>network?"}
+    
+    CheckNetwork -->|No| SwitchNet["Prompt: Switch to correct network"]
+    SwitchNet --> CheckNetwork
+    
+    CheckNetwork -->|Yes| ReadContract["Read contract: check roles"]
+    
+    ReadContract --> CheckAdmin{"Has<br/>ORGANIZER_ROLE?"}
+    
+    CheckAdmin -->|Yes| AdminView["Show Admin Dashboard"]
+    CheckAdmin -->|No| VoterView["Show Voter Dashboard"]
+    
+    VoterView --> SelectElection["User selects election"]
+    
+    SelectElection --> CheckEligible{"isEligibleVoter<br/>(electionId, address)?"}
+    
+    CheckEligible -->|No| NotEligible["Show: Not eligible for this election"]
+    CheckEligible -->|Yes| CheckStatus{"Election<br/>status?"}
+    
+    CheckStatus -->|Pending| NotStarted["Show: Election not yet started"]
+    CheckStatus -->|Active| CheckVoted{"Already<br/>voted?"}
+    CheckStatus -->|Ended| ShowResults["Show: Election ended, view results"]
+    CheckStatus -->|Finalized| ShowFinal["Show: Final results"]
+    
+    CheckVoted -->|No| ShowBallot["Show ballot interface"]
+    CheckVoted -->|Yes| ShowModify["Show current ballot + modify option"]
+
+    style Start fill:#3B82F6,stroke:#1E40AF,color:#fff
+    style AdminView fill:#10B981,stroke:#059669,color:#fff
+    style ShowBallot fill:#10B981,stroke:#059669,color:#fff
+    style ShowModify fill:#F59E0B,stroke:#D97706,color:#fff
+    style NotEligible fill:#F43F5E,stroke:#E11D48,color:#fff
+    style InstallMM fill:#F43F5E,stroke:#E11D48,color:#fff

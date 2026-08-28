@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    actor Voter
+    participant Client as Next.js Frontend
+    participant API as /api/auth/login
+    participant DB as Off-Chain Database
+
+    Voter->>Client: Enter Email & Password
+    Client->>API: POST /api/auth/login
+    API->>DB: Lookup user by Email
+    DB-->>API: User record (salt:hash)
+    API->>API: Verify PBKDF2 hash
+    API->>DB: Create session token
+    API-->>Client: 200 OK (Set HTTP-Only Cookie)
+    Client-->>Voter: Authenticated User Session Active
