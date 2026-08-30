@@ -50,10 +50,15 @@ const districts = [
 
 export async function GET(req) {
   try {
+    const { readDb, writeDb } = require('../../../lib/db');
+    const { getAuthenticatedUser } = require('../../../lib/auth');
+    
+    const db = await readDb();
     const user = await getAuthenticatedUser(req);
     
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized. Only System Administrators can seed the database.' }, { status: 403 });
+    // Only require admin auth if the database already has users
+    if (db.users.length > 0 && (!user || user.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Unauthorized. Only System Administrators can seed an initialized database.' }, { status: 403 });
     }
 
     const users = [

@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config({ path: '.env.local' });
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -16,12 +17,11 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
     },
-    // Sepolia will be configured in Phase 11
-    // sepolia: {
-    //   url: process.env.SEPOLIA_RPC_URL || "",
-    //   accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
-    //   chainId: 11155111,
-    // },
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL || "",
+      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+      chainId: 11155111,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

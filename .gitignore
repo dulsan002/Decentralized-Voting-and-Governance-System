@@ -26,3 +26,5 @@ Thumbs.db
 # Next.js (for future phases)
 .next/
 out/
+.vercel
+.env*
