@@ -17,7 +17,12 @@ export default function AuditTrailPage() {
     try {
       setLoading(true);
       const filter = contract.filters.BallotCast();
-      const logs = await contract.queryFilter(filter, 0, 'latest');
+      
+      // Free public RPCs limit log queries to 10,000 blocks at a time.
+      // We will query from 9000 blocks ago to latest.
+      const currentBlock = await contract.runner.provider.getBlockNumber();
+      const startBlock = Math.max(0, currentBlock - 9000);
+      const logs = await contract.queryFilter(filter, startBlock, 'latest');
 
       let formatted = logs.map((log) => ({
         txHash: log.transactionHash,
