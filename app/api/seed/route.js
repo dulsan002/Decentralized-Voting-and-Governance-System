@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import crypto from 'crypto';
+import { writeDb } from '../../../lib/db';
+import { getAuthenticatedUser } from '../../../lib/auth';
 
 function hashPassword(password) {
   const salt = 'c7d740c0363297a78e7c10b77b7d0d0f';
@@ -50,15 +50,11 @@ const districts = [
 
 export async function GET(req) {
   try {
-    const { getAuthenticatedUser } = require('../../../lib/auth');
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     
     if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized. Only System Administrators can seed the database.' }, { status: 403 });
     }
-
-    const DATA_DIR = path.join(process.cwd(), 'data');
-    const DB_FILE = path.join(DATA_DIR, 'db.json');
 
     const users = [
       {
@@ -309,11 +305,8 @@ export async function GET(req) {
       elections
     };
 
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-
-    fs.writeFileSync(DB_FILE, JSON.stringify(dbData, null, 2), 'utf-8');
+    // Write to MongoDB instead of local filesystem
+    await writeDb(dbData);
 
     return NextResponse.json({
       success: true,
