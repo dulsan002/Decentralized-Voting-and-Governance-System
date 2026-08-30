@@ -11,7 +11,7 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { message, nonce } = generateChallengeNonce(user.id);
+    const { message, nonce } = await generateChallengeNonce(user.id);
     return NextResponse.json({ success: true, message, nonce });
   } catch (err) {
     console.error("Wallet challenge GET error:", err);
