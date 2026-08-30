@@ -6,7 +6,7 @@ import { updateUser, readDb } from '../../../../lib/db';
 // GET /api/wallet/link - Get challenge message for authenticated user
 export async function GET(req) {
   try {
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -22,7 +22,7 @@ export async function GET(req) {
 // POST /api/wallet/link - Submit signed message to verify and link wallet address
 export async function POST(req) {
   try {
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -41,17 +41,17 @@ export async function POST(req) {
 
     // If wallet is already linked to another account, automatically unlink it from that account
     // This prevents wallet-stealing conflicts when users switch between accounts with the same MetaMask wallet
-    const db = readDb();
+    const db = await readDb();
     const existingLink = db.users.find(u => u.linkedWalletAddress && u.linkedWalletAddress.toLowerCase() === address.toLowerCase() && u.id !== user.id);
     if (existingLink) {
-      updateUser(existingLink.id, {
+      await updateUser(existingLink.id, {
         linkedWalletAddress: null,
         walletVerifiedAt: null,
       });
     }
 
     // Link wallet address to user account
-    const updated = updateUser(user.id, {
+    const updated = await updateUser(user.id, {
       linkedWalletAddress: address,
       walletVerifiedAt: new Date().toISOString(),
       currentChallengeNonce: null,

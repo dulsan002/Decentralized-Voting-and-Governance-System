@@ -30,18 +30,18 @@ export async function POST(req) {
     }
 
     // Check duplicate email
-    if (findUserByEmail(email)) {
+    if (await findUserByEmail(email)) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
     }
 
     // Check duplicate NIC
-    if (findUserByNic(nicNumber)) {
+    if (await findUserByNic(nicNumber)) {
       return NextResponse.json({ error: 'An account with this NIC number already exists' }, { status: 409 });
     }
 
     const passwordHash = hashPassword(password);
 
-    const newUser = createUser({
+    const newUser = await createUser({
       email: email.toLowerCase(),
       passwordHash,
       fullName,
@@ -58,7 +58,7 @@ export async function POST(req) {
       verificationStatus: 'REGISTERED', // Start as REGISTERED
     });
 
-    const session = createSession(newUser.id);
+    const session = await createSession(newUser.id);
 
     const { passwordHash: _, ...sanitizedUser } = newUser;
 

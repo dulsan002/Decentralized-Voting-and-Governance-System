@@ -3,7 +3,7 @@ import { getAuthenticatedUser } from '../../../../lib/auth';
 
 export async function GET(req) {
   try {
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     if (!user) {
       return NextResponse.json({ authenticated: false, user: null }, { status: 200 });
     }

@@ -4,7 +4,7 @@ import db from '../../../../lib/db';
 export async function GET(request, { params }) {
   try {
     const electionId = Number(params.id);
-    const elections = db.get('elections') || [];
+    const elections = await db.get('elections') || [];
     const election = elections.find(e => Number(e.id) === electionId);
 
     if (!election) {

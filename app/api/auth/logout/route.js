@@ -13,7 +13,7 @@ export async function POST(req) {
       );
       const token = cookies['decentravote_session'];
       if (token) {
-        deleteSession(token);
+        await deleteSession(token);
       }
     }
 

@@ -4,7 +4,7 @@ import { readDb, writeDb } from '../../../../lib/db';
 
 export async function POST(req) {
   try {
-    const db = readDb();
+    const db = await readDb();
     const syntheticUsers = generateSyntheticUsers(105);
 
     // Merge existing admin & key users
@@ -15,7 +15,7 @@ export async function POST(req) {
       }
     });
 
-    writeDb(db);
+    await writeDb(db);
 
     return NextResponse.json({
       success: true,
