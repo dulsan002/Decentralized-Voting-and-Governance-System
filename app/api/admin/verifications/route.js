@@ -5,7 +5,7 @@ import { readDb, updateUser } from '../../../../lib/db';
 // GET /api/admin/verifications - List users & document metadata for admin review
 export async function GET(req) {
   try {
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     if (!user || user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized. Admin role required.' }, { status: 403 });
     }
@@ -14,7 +14,7 @@ export async function GET(req) {
     const statusFilter = searchParams.get('status') || 'ALL';
     const searchQuery = (searchParams.get('search') || '').toLowerCase();
 
-    const db = readDb();
+    const db = await readDb();
 
     let usersList = db.users.map(u => {
       const { passwordHash, ...sanitized } = u;
@@ -53,7 +53,7 @@ export async function GET(req) {
 // POST /api/admin/verifications - Status update, wallet unlinking, support problem resolution
 export async function POST(req) {
   try {
-    const adminUser = getAuthenticatedUser(req);
+    const adminUser = await getAuthenticatedUser(req);
     if (!adminUser || adminUser.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized. Admin role required.' }, { status: 403 });
     }
@@ -65,7 +65,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
-    const db = readDb();
+    const db = await readDb();
     const targetUser = db.users.find(u => u.id === userId);
     if (!targetUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -100,7 +100,7 @@ export async function POST(req) {
       updates.adminNotes = adminNotes;
     }
 
-    const updated = updateUser(userId, updates);
+    const updated = await updateUser(userId, updates);
     const { passwordHash: _, ...sanitized } = updated;
     return NextResponse.json({ success: true, user: sanitized });
   } catch (err) {

@@ -5,7 +5,7 @@ import { updateUser } from '../../../../lib/db';
 
 export async function POST(req) {
   try {
-    const user = getAuthenticatedUser(req);
+    const user = await getAuthenticatedUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -21,7 +21,7 @@ export async function POST(req) {
     const backDoc = await saveDocument(user.id, 'NIC_BACK', nicBackDataUrl);
 
     // Update User Verification state to PENDING_VERIFICATION
-    updateUser(user.id, {
+    await updateUser(user.id, {
       verificationStatus: 'PENDING_VERIFICATION',
     });
 

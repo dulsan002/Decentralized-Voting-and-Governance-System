@@ -8,6 +8,8 @@ typechain-types/
 
 # Environment
 .env
+.env.local
+.env.production
 
 # Coverage
 coverage/
